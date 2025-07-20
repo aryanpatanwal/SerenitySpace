@@ -34,3 +34,14 @@ A full-stack mental wellness application that combines journaling and AI-powered
 - MongoDB
 - OpenAI API key
 
+## Screenshots
+
+### Home page
+![Demo Screenshot](screenshots/home.png)
+
+### Chatbot page
+![Demo Screenshot](screenshots/chatbot.png)
+
+### Journal page
+![Demo Screenshot](screenshots/journal.png)
+
