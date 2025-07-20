@@ -2,6 +2,11 @@
 
 A full-stack mental wellness application that combines journaling and AI-powered conversational support.
 
+# Live Demo
+
+- **Frontend:** [https://serenityspacex.netlify.app/](https://serenityspacex.netlify.app/)
+- **Backend:** [https://serenity-space-delta.vercel.app/](https://serenity-space-delta.vercel.app/) 
+
 ## Features
 
 - 📝 **Journaling**: Private, AI-analyzed journal entries with sentiment tracking
