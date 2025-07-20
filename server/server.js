@@ -11,11 +11,11 @@ const profileRouter = require('./routes/profileRouter');
 const app = express();
 
 // Middleware
-app.use(cors());
 app.use(cors({
-  origin: 'https://serenityspacex.netlify.app/', 
+  origin: 'https://serenityspacex.netlify.app', // No trailing slash
   credentials: true
 }));
+app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRouter);
