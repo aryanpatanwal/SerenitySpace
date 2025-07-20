@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 
-export default function AuthPage({ onAuth, darkMode }) {
-  const [isLogin, setIsLogin] = useState(true);
+export default function AuthPage({ onAuth, darkMode, defaultMode = 'login' }) {
+  const [isLogin, setIsLogin] = useState(defaultMode === 'login');
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
+
+  React.useEffect(() => {
+    setIsLogin(defaultMode === 'login');
+  }, [defaultMode]);
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 

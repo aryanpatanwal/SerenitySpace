@@ -201,6 +201,8 @@ function App() {
     localStorage.removeItem('token');
     setUser(null);
     setPage('journal');
+    setShowAuth(false);
+    setUnauthPage('home');
   };
   const handleNav = p => {
     if (!user && p === 'home') {
@@ -221,6 +223,15 @@ function App() {
       localStorage.setItem('darkMode', JSON.stringify(!dm));
       return !dm;
     });
+  };
+
+  const handleLogin = () => {
+    setAuthMode('login');
+    setShowAuth(true);
+  };
+  const handleSignup = () => {
+    setAuthMode('signup');
+    setShowAuth(true);
   };
 
   const appBg = darkMode ? '#18181b' : '#f8fafc';
@@ -279,14 +290,14 @@ function App() {
         }
       `}</style>
       <Navbar
-        onNav={handleNav}
+        onNav={user ? setPage : setUnauthPage}
         onLogout={handleLogout}
-        current={page}
+        current={user ? page : unauthPage}
         darkMode={darkMode}
         onToggleDarkMode={toggleDarkMode}
         isAuthenticated={!!user}
-        onLogin={() => { setUnauthPage('auth'); setAuthMode('login'); }}
-        onSignup={() => { setUnauthPage('auth'); setAuthMode('signup'); }}
+        onLogin={handleLogin}
+        onSignup={handleSignup}
       />
       <main className="app-main" style={{ minHeight: '80vh' }}>
         {!user ? (
@@ -302,6 +313,17 @@ function App() {
           </>
         )}
       </main>
+      {showAuth && (
+        <AuthPage
+          onAuth={user => {
+            setUser(user);
+            setShowAuth(false);
+            setPage('journal');
+          }}
+          darkMode={darkMode}
+          defaultMode={authMode}
+        />
+      )}
       <footer className="app-footer" style={{
         display: 'flex',
         justifyContent: 'space-between',
