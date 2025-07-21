@@ -39,7 +39,7 @@ Mind Exercise/Advice: [A simple, practical exercise or piece of advice they can 
 Remember: You're here to support and guide, not to fix or solve everything.`;
 
       const completion = await openai.chat.completions.create({
-        model: process.env.OPENAI_MODEL || 'provider-1/gpt-4o-latest',
+        model: process.env.OPENAI_MODEL || 'provider-6/gpt-4o',
         messages: [
           { role: 'system', content: systemPrompt },
           { role: 'user', content: message }

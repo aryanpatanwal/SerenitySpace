@@ -287,6 +287,7 @@ function App() {
         isAuthenticated={!!user}
         onLogin={() => { setUnauthPage('auth'); setAuthMode('login'); }}
         onSignup={() => { setUnauthPage('auth'); setAuthMode('signup'); }}
+        authMode={authMode}
       />
       <main className="app-main" style={{ minHeight: '80vh' }}>
         {!user ? (

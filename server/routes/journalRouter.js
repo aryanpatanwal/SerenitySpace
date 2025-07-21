@@ -28,7 +28,7 @@ Please respond in this exact JSON format:
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "provider-1/gpt-4o-latest",
+      model: process.env.OPENAI_MODEL || "provider-6/gpt-4o",
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
     });
