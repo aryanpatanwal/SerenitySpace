@@ -296,8 +296,9 @@ function App() {
         darkMode={darkMode}
         onToggleDarkMode={toggleDarkMode}
         isAuthenticated={!!user}
-        onLogin={handleLogin}
-        onSignup={handleSignup}
+        onLogin={() => { setUnauthPage('auth'); setAuthMode('login'); }}
+        onSignup={() => { setUnauthPage('auth'); setAuthMode('signup'); }}
+        authMode={authMode}
       />
       <main className="app-main" style={{ minHeight: '80vh' }}>
         {!user ? (

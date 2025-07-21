@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDarkMode, isAuthenticated, onLogin, onSignup }) {
+export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDarkMode, isAuthenticated, onLogin, onSignup, authMode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -55,6 +55,10 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
           margin-left: 8px;
           cursor: pointer;
           transition: background 0.2s, color 0.2s;
+        }
+        .nav-auth-btn.active {
+          background: #6366f1 !important;
+          color: #fff !important;
         }
         .nav-login-btn {
           background: ${darkMode ? '#6366f1' : '#6366f1'};
@@ -189,8 +193,18 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
         ) : (
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             <button className="dark-toggle-navbar" onClick={onToggleDarkMode}>{darkMode ? 'Light' : 'Dark'}</button>
-            <button className="nav-auth-btn nav-login-btn" onClick={onLogin}>Login</button>
-            <button className="nav-auth-btn nav-signup-btn" onClick={onSignup}>Sign Up</button>
+            <button
+              className={`nav-auth-btn nav-login-btn${authMode === 'login' ? ' active' : ''}`}
+              onClick={onLogin}
+            >
+              Login
+            </button>
+            <button
+              className={`nav-auth-btn nav-signup-btn${authMode === 'signup' ? ' active' : ''}`}
+              onClick={onSignup}
+            >
+              Sign Up
+            </button>
           </div>
         )}
       </div>

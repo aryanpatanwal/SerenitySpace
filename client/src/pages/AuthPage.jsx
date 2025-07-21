@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
 import { API_ENDPOINTS } from '../config/api';
 
-export default function AuthPage({ onAuth, darkMode, defaultMode = 'login' }) {
-  const [isLogin, setIsLogin] = useState(defaultMode === 'login');
+export default function AuthPage({ onAuth, darkMode, mode, setAuthMode }) {
   const [form, setForm] = useState({ username: '', email: '', password: '' });
   const [error, setError] = useState('');
 
-  React.useEffect(() => {
-    setIsLogin(defaultMode === 'login');
-  }, [defaultMode]);
+  const isLogin = mode !== 'signup';
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -29,7 +26,7 @@ export default function AuthPage({ onAuth, darkMode, defaultMode = 'login' }) {
         localStorage.setItem('token', data.token);
         onAuth(data.user);
       } else {
-        setIsLogin(true);
+        setAuthMode('login'); // After registration, show login form
       }
     } catch (err) {
       setError(err.message);
@@ -83,7 +80,7 @@ export default function AuthPage({ onAuth, darkMode, defaultMode = 'login' }) {
           <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required style={{ width: '100%', marginBottom: 16, padding: 10, borderRadius: 8, border: `1px solid ${inputBorder}`, fontSize: 16, background: inputBg, color: inputText }} />
           <button type="submit" style={{ width: '100%', marginBottom: 12, padding: 12, borderRadius: 8, background: btnBg, color: btnText, fontWeight: 600, fontSize: 16, border: 'none', boxShadow: '0 2px 8px rgba(99,102,241,0.08)' }}>{isLogin ? 'Login' : 'Register'}</button>
         </form>
-        <button onClick={() => setIsLogin(!isLogin)} style={{ width: '100%', padding: 10, borderRadius: 8, background: btnBgAlt, color: btnTextAlt, fontWeight: 600, border: 'none', fontSize: 15, marginBottom: 8 }}>
+        <button onClick={() => setAuthMode(isLogin ? 'signup' : 'login')} style={{ width: '100%', padding: 10, borderRadius: 8, background: btnBgAlt, color: btnTextAlt, fontWeight: 600, border: 'none', fontSize: 15, marginBottom: 8 }}>
           {isLogin ? 'Need an account? Register' : 'Already have an account? Login'}
         </button>
         {error && <div style={{ color: '#ef4444', marginTop: 8, textAlign: 'center', fontWeight: 500 }}>{error}</div>}
