@@ -20,7 +20,7 @@ async function analyzeJournalContent(content) {
 
 Journal entry: "${content}"
 
-Please respond in this exact JSON format:
+Please respond with ONLY valid JSON (no code block, no backticks, no explanation):
 {
   "sentiment": "positive/negative/neutral/mixed",
   "keywords": ["keyword1", "keyword2", "keyword3"],
@@ -33,8 +33,15 @@ Please respond in this exact JSON format:
       temperature: 0.3,
     });
 
-    const response = completion.choices[0].message.content;
-    return JSON.parse(response);
+    let response = completion.choices[0].message.content;
+    // Remove code block markers if present
+    response = response.replace(/```json|```/g, '').trim();
+    try {
+      return JSON.parse(response);
+    } catch (err) {
+      console.error('AI analysis JSON parse error. Raw response:', response);
+      throw err;
+    }
   } catch (error) {
     console.error('AI analysis error:', error);
     return {

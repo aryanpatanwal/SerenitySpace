@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDarkMode, isAuthenticated, onLogin, onSignup, authMode }) {
+export default function Navbar({ onLogout, darkMode, onToggleDarkMode, isAuthenticated }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -55,10 +56,18 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
           margin-left: 8px;
           cursor: pointer;
           transition: background 0.2s, color 0.2s;
+          text-decoration: none !important;
+          background: ${darkMode ? '#23232a' : '#e0e7ef'};
+          color: ${darkMode ? '#a5b4fc' : '#6366f1'};
+          display: inline-block;
         }
-        .nav-auth-btn.active {
+        .nav-auth-btn:active {
           background: #6366f1 !important;
           color: #fff !important;
+        }
+        .nav-auth-btn:hover {
+          background: ${darkMode ? '#373737' : '#c7d2fe'};
+          color: #6366f1;
         }
         .nav-login-btn {
           background: ${darkMode ? '#6366f1' : '#6366f1'};
@@ -139,6 +148,9 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
         .mobile-dropdown-item:not(:last-child) {
           border-bottom: 1px solid ${darkMode ? '#373737' : '#e0e0e0'};
         }
+        .nav-link {
+          text-decoration: none !important;
+        }
         @media (max-width: 768px) {
           .mobile-burger {
             display: block;
@@ -153,8 +165,9 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
           }
         }
       `}</style>
-      <button
-        onClick={() => onNav('home')}
+      <Link
+        to="/"
+        className="nav-link"
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -177,14 +190,14 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
           <path d="M12 17c-2.5-1.5-4.5-4.5-4.5-7.5C7.5 7.5 9.5 6 12 6s4.5 1.5 4.5 3.5C16.5 12.5 14.5 15.5 12 17z" stroke={darkMode ? '#a5b4fc' : '#6366f1'} strokeWidth="1.5" fill={darkMode ? '#18181b' : '#f1f5f9'} />
         </svg>
         <span style={{ display: window.innerWidth <= 480 ? 'none' : 'inline' }}>SerenitySpace</span>
-      </button>
+      </Link>
       {/* Desktop Navigation */}
       <div className="desktop-nav" style={{ display: 'flex', alignItems: 'center', gap: 16, marginLeft: 'auto' }}>
         {isAuthenticated ? (
           <>
-            <button className="nav-btn" onClick={() => onNav('journal')} style={{ fontWeight: current === 'journal' ? 700 : 500, color: current === 'journal' ? (darkMode ? '#a5b4fc' : '#6366f1') : (darkMode ? '#f3f4f6' : '#222'), background: 'none', border: 'none', fontSize: 16, cursor: 'pointer', padding: 8, borderRadius: 8 }}>Journal</button>
-            <button className="nav-btn" onClick={() => onNav('chatbot')} style={{ fontWeight: current === 'chatbot' ? 700 : 500, color: current === 'chatbot' ? (darkMode ? '#a5b4fc' : '#6366f1') : (darkMode ? '#f3f4f6' : '#222'), background: 'none', border: 'none', fontSize: 16, cursor: 'pointer', padding: 8, borderRadius: 8 }}>Chatbot</button>
-            <button className="nav-btn" onClick={() => onNav('profile')} style={{ fontWeight: current === 'profile' ? 700 : 500, color: current === 'profile' ? (darkMode ? '#a5b4fc' : '#6366f1') : (darkMode ? '#f3f4f6' : '#222'), background: 'none', border: 'none', fontSize: 16, cursor: 'pointer', padding: 8, borderRadius: 8 }}>Profile</button>
+            <Link to="/journal" className="nav-btn nav-link">Journal</Link>
+            <Link to="/chatbot" className="nav-btn nav-link">Chatbot</Link>
+            <Link to="/profile" className="nav-btn nav-link">Profile</Link>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <button className="dark-toggle-navbar" onClick={onToggleDarkMode}>{darkMode ? 'Light' : 'Dark'}</button>
               <button className="nav-logout-btn" onClick={onLogout} style={{ background: darkMode ? '#23232a' : '#f1f5f9', color: '#ef4444', fontWeight: 600, border: 'none', fontSize: 15, padding: 8, borderRadius: 8, cursor: 'pointer' }}>Logout</button>
@@ -193,18 +206,8 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
         ) : (
           <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
             <button className="dark-toggle-navbar" onClick={onToggleDarkMode}>{darkMode ? 'Light' : 'Dark'}</button>
-            <button
-              className={`nav-auth-btn nav-login-btn${authMode === 'login' ? ' active' : ''}`}
-              onClick={onLogin}
-            >
-              Login
-            </button>
-            <button
-              className={`nav-auth-btn nav-signup-btn${authMode === 'signup' ? ' active' : ''}`}
-              onClick={onSignup}
-            >
-              Sign Up
-            </button>
+            <Link to="/login" className="nav-link nav-auth-btn">Login</Link>
+            <Link to="/signup" className="nav-link nav-auth-btn">Sign Up</Link>
           </div>
         )}
       </div>
@@ -222,24 +225,24 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
       <div className={`mobile-dropdown${isMobileMenuOpen ? ' open' : ''}`}>
         {isAuthenticated ? (
           <>
-            <button
+            <Link
+              to="/journal"
               className={`mobile-dropdown-item${current === 'journal' ? ' active' : ''}`}
-              onClick={() => onNav('journal')}
             >
               Journal
-            </button>
-            <button
+            </Link>
+            <Link
+              to="/chatbot"
               className={`mobile-dropdown-item${current === 'chatbot' ? ' active' : ''}`}
-              onClick={() => onNav('chatbot')}
             >
               Chatbot
-            </button>
-            <button
+            </Link>
+            <Link
+              to="/profile"
               className={`mobile-dropdown-item${current === 'profile' ? ' active' : ''}`}
-              onClick={() => onNav('profile')}
             >
               Profile
-            </button>
+            </Link>
             <div style={{ borderTop: `1px solid ${darkMode ? '#373737' : '#e0e0e0'}`, marginTop: 8, paddingTop: 8 }}>
               <button
                 className="mobile-dropdown-item"
@@ -259,20 +262,20 @@ export default function Navbar({ onNav, onLogout, current, darkMode, onToggleDar
           </>
         ) : (
           <>
-            <button
+            <Link
+              to="/login"
               className="mobile-dropdown-item"
-              onClick={() => onLogin()}
               style={{ color: '#6366f1' }}
             >
               🔐 Login
-            </button>
-            <button
+            </Link>
+            <Link
+              to="/signup"
               className="mobile-dropdown-item"
-              onClick={() => onSignup()}
               style={{ color: '#6366f1' }}
             >
               ✨ Sign Up
-            </button>
+            </Link>
             <div style={{ borderTop: `1px solid ${darkMode ? '#373737' : '#e0e0e0'}`, marginTop: 8, paddingTop: 8 }}>
               <button
                 className="mobile-dropdown-item"

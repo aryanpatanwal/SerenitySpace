@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AuthPage from './pages/AuthPage.jsx';
 import JournalPage from './pages/JournalPage.jsx';
 import ChatbotPage from './pages/ChatbotPage.jsx';
@@ -187,51 +188,23 @@ function App() {
     if (!token) return null;
     return { username: 'User' };
   });
-  const [page, setPage] = useState('journal');
   const [darkMode, setDarkMode] = useState(() => {
     const saved = localStorage.getItem('darkMode');
     return saved ? JSON.parse(saved) : false;
   });
-  const [showAuth, setShowAuth] = useState(false);
-  const [unauthPage, setUnauthPage] = useState('home');
   const [authMode, setAuthMode] = useState('login');
 
   const handleAuth = user => setUser(user);
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
-    setPage('journal');
-    setShowAuth(false);
-    setUnauthPage('home');
-  };
-  const handleNav = p => {
-    if (!user && p === 'home') {
-      setUnauthPage('home');
-    } else if (!user) {
-      setUnauthPage('auth');
-    } else {
-      if (p === 'home') {
-        setUnauthPage('home');
-        setPage('home'); // Also set the page state for authenticated users
-      } else {
-        setPage(p);
-      }
-    }
+    setAuthMode('login');
   };
   const toggleDarkMode = () => {
     setDarkMode(dm => {
       localStorage.setItem('darkMode', JSON.stringify(!dm));
       return !dm;
     });
-  };
-
-  const handleLogin = () => {
-    setAuthMode('login');
-    setShowAuth(true);
-  };
-  const handleSignup = () => {
-    setAuthMode('signup');
-    setShowAuth(true);
   };
 
   const appBg = darkMode ? '#18181b' : '#f8fafc';
@@ -241,156 +214,162 @@ function App() {
   const logoColor = darkMode ? '#a5b4fc' : '#6366f1';
 
   return (
-    <div style={{ minHeight: '100vh', background: appBg, color: appText, transition: 'background 0.3s, color 0.3s' }}>
-      <style>{`
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-60px); }
-          to { opacity: 1; transform: none; }
-        }
-        html, body, #root {
-          margin: 0;
-          padding: 0;
-          box-sizing: border-box;
-          width: 100vw;
-          min-width: 0;
-          max-width: 100vw;
-          overflow-x: hidden;
-        }
-        *, *::before, *::after {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-        @media (max-width: 768px) {
-          .app-main {
-            min-height: calc(100vh - 120px) !important;
-          }
-          .app-footer {
-            padding: 0.75rem !important;
-            flex-direction: column !important;
-            gap: 12px !important;
-            text-align: center !important;
-          }
-          .footer-content {
-            order: 2 !important;
-            font-size: 0.8rem !important;
-          }
-          .footer-social {
-            order: 1 !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .app-main {
-            min-height: calc(100vh - 100px) !important;
-          }
-          .app-footer {
-            padding: 0.5rem !important;
-            font-size: 0.75rem !important;
-          }
-        }
-      `}</style>
-      <Navbar
-        onNav={user ? setPage : setUnauthPage}
-        onLogout={handleLogout}
-        current={user ? page : unauthPage}
-        darkMode={darkMode}
-        onToggleDarkMode={toggleDarkMode}
-        isAuthenticated={!!user}
-        onLogin={() => { setUnauthPage('auth'); setAuthMode('login'); }}
-        onSignup={() => { setUnauthPage('auth'); setAuthMode('signup'); }}
-        authMode={authMode}
-      />
-      <main className="app-main" style={{ minHeight: '80vh' }}>
-        {!user ? (
-          unauthPage === 'home' ?
-            <HomePage darkMode={darkMode} onToggleDarkMode={toggleDarkMode} /> :
-            <AuthPage onAuth={handleAuth} mode={authMode} darkMode={darkMode} />
-        ) : (
-          <>
-            {page === 'home' && <HomePage darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />}
-            {page === 'journal' && <JournalPage user={user} onLogout={handleLogout} darkMode={darkMode} />}
-            {page === 'chatbot' && <ChatbotPage darkMode={darkMode} />}
-            {page === 'profile' && <ProfilePage darkMode={darkMode} onLogout={handleLogout} />}
-          </>
-        )}
-      </main>
-      {showAuth && (
-        <AuthPage
-          onAuth={user => {
-            setUser(user);
-            setShowAuth(false);
-            setPage('journal');
-          }}
-          darkMode={darkMode}
-          defaultMode={authMode}
-        />
-      )}
-      <footer className="app-footer" style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '1rem',
-        marginTop: '2rem',
-        color: darkMode ? '#a1a1aa' : '#888',
-        fontSize: '0.9rem',
-        borderTop: `1px solid ${footerBorder}`,
-        background: footerBg,
-        flexWrap: 'wrap',
-        transition: 'background 0.3s, color 0.3s, border-color 0.3s'
-      }}>
+    <BrowserRouter>
+      <div style={{ minHeight: '100vh', background: appBg, color: appText, transition: 'background 0.3s, color 0.3s' }}>
         <style>{`
-          .footer-social-link {
-            display: inline-flex;
-            align-items: center;
-            color: ${logoColor};
-            transition: color 0.2s;
+          @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-60px); }
+            to { opacity: 1; transform: none; }
           }
-          .footer-social-link:hover {
-            color: ${darkMode ? '#818cf8' : '#3730a3'};
+          html, body, #root {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            width: 100vw;
+            min-width: 0;
+            max-width: 100vw;
+            overflow-x: hidden;
           }
-          .footer-social-link svg {
-            fill: currentColor;
-            stroke: none;
+          *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
           }
-          .dark-toggle {
-            background: ${darkMode ? '#18181b' : '#e0e7ef'};
-            border: 1px solid ${footerBorder};
-            color: ${darkMode ? '#f3f4f6' : '#222'};
-            border-radius: 999px;
-            padding: 6px 18px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            margin-left: 18px;
-            transition: background 0.3s, color 0.3s, border-color 0.3s;
+          @media (max-width: 768px) {
+            .app-main {
+              min-height: calc(100vh - 120px) !important;
+            }
+            .app-footer {
+              padding: 0.75rem !important;
+              flex-direction: column !important;
+              gap: 12px !important;
+              text-align: center !important;
+            }
+            .footer-content {
+              order: 2 !important;
+              font-size: 0.8rem !important;
+            }
+            .footer-social {
+              order: 1 !important;
+            }
           }
-          .dark-toggle:hover {
-            background: ${darkMode ? '#23232a' : '#c7d2fe'};
+          @media (max-width: 480px) {
+            .app-main {
+              min-height: calc(100vh - 100px) !important;
+            }
+            .app-footer {
+              padding: 0.5rem !important;
+              font-size: 0.75rem !important;
+            }
           }
         `}</style>
-        <div className="footer-logo" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 21c-4.5-2.5-7.5-7-7.5-11.5C4.5 5.5 7.5 3 12 3s7.5 2.5 7.5 6.5C19.5 14 16.5 18.5 12 21z" stroke={logoColor} strokeWidth="2" fill={darkMode ? '#23232a' : '#fff'} />
-            <path d="M12 17c-2.5-1.5-4.5-4.5-4.5-7.5C7.5 7.5 9.5 6 12 6s4.5 1.5 4.5 3.5C16.5 12.5 14.5 15.5 12 17z" stroke={logoColor} strokeWidth="1.5" fill={darkMode ? '#18181b' : '#f1f5f9'} />
-          </svg>
-          <span style={{ fontWeight: 700, color: logoColor, fontFamily: "'Poppins', sans-serif", fontSize: 18, letterSpacing: '1px' }}>SerenitySpace</span>
-        </div>
-        <div className="footer-content" style={{ textAlign: 'center', flex: 1 }}>
-          © {new Date().getFullYear()} SerenitySpace.Inc. All rights reserved.
-        </div>
-        <div className="footer-social" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="footer-social-link">
-            <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          </a>
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter" className="footer-social-link">
-            <svg width="22" height="22" viewBox="0 0 512 512"><path d="M459.4 151.7c.32 4.54.32 9.1.32 13.66 0 138.72-105.58 298.56-298.56 298.56A296.32 296.32 0 0 1 0 408.09a209.1 209.1 0 0 0 24.42 1.28 209.09 209.09 0 0 0 129.29-44.56 104.52 104.52 0 0 1-97.52-72.54 132.07 132.07 0 0 0 19.8 1.6 110.2 110.2 0 0 0 27.45-3.6A104.48 104.48 0 0 1 21.8 188.1v-1.28a104.68 104.68 0 0 0 47.18 13.1A104.52 104.52 0 0 1 35.7 82.15a297.32 297.32 0 0 0 215.5 109.44 117.6 117.6 0 0 1-2.56-23.87A104.52 104.52 0 0 1 391.86 63.4a204.13 204.13 0 0 0 66.36-25.34 104.88 104.88 0 0 1-45.92 57.6A209.1 209.1 0 0 0 512 97.2a223.34 223.34 0 0 1-52.6 54.5Z"/></svg>
-          </a>
-          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="footer-social-link">
-            <svg width="22" height="22" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91V127.91c0-25.35 12.42-50.06 52.24-50.06H293V6.26S259.5 0 225.36 0c-73.22 0-121 44.38-121 124.72v70.62H22.89V288h81.47v224h100.2V288z"/></svg>
-          </a>
-        </div>
-      </footer>
-    </div>
+        <Navbar
+          darkMode={darkMode}
+          onToggleDarkMode={toggleDarkMode}
+          isAuthenticated={!!user}
+          onLogout={handleLogout}
+          authMode={authMode}
+          onLogin={() => setAuthMode('login')}
+          onSignup={() => setAuthMode('signup')}
+        />
+        <main className="app-main" style={{ minHeight: '80vh' }}>
+          <Routes>
+            <Route path="/" element={<HomePage darkMode={darkMode} onToggleDarkMode={toggleDarkMode} />} />
+            <Route path="/login" element={
+              !user
+                ? <AuthPage onAuth={handleAuth} mode="login" darkMode={darkMode} />
+                : <Navigate to="/journal" />
+            } />
+            <Route path="/signup" element={
+              !user
+                ? <AuthPage onAuth={handleAuth} mode="signup" darkMode={darkMode} />
+                : <Navigate to="/journal" />
+            } />
+            <Route path="/journal" element={
+              user
+                ? <JournalPage user={user} onLogout={handleLogout} darkMode={darkMode} />
+                : <Navigate to="/login" />
+            } />
+            <Route path="/chatbot" element={
+              user
+                ? <ChatbotPage darkMode={darkMode} />
+                : <Navigate to="/login" />
+            } />
+            <Route path="/profile" element={
+              user
+                ? <ProfilePage darkMode={darkMode} onLogout={handleLogout} />
+                : <Navigate to="/login" />
+            } />
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+        </main>
+        <footer className="app-footer" style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '1rem',
+          marginTop: '2rem',
+          color: darkMode ? '#a1a1aa' : '#888',
+          fontSize: '0.9rem',
+          borderTop: `1px solid ${footerBorder}`,
+          background: footerBg,
+          flexWrap: 'wrap',
+          transition: 'background 0.3s, color 0.3s, border-color 0.3s'
+        }}>
+          <style>{`
+            .footer-social-link {
+              display: inline-flex;
+              align-items: center;
+              color: ${logoColor};
+              transition: color 0.2s;
+            }
+            .footer-social-link:hover {
+              color: ${darkMode ? '#818cf8' : '#3730a3'};
+            }
+            .footer-social-link svg {
+              fill: currentColor;
+              stroke: none;
+            }
+            .dark-toggle {
+              background: ${darkMode ? '#18181b' : '#e0e7ef'};
+              border: 1px solid ${footerBorder};
+              color: ${darkMode ? '#f3f4f6' : '#222'};
+              border-radius: 999px;
+              padding: 6px 18px;
+              font-size: 0.95rem;
+              font-weight: 600;
+              cursor: pointer;
+              margin-left: 18px;
+              transition: background 0.3s, color 0.3s, border-color 0.3s;
+            }
+            .dark-toggle:hover {
+              background: ${darkMode ? '#23232a' : '#c7d2fe'};
+            }
+          `}</style>
+          <div className="footer-logo" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21c-4.5-2.5-7.5-7-7.5-11.5C4.5 5.5 7.5 3 12 3s7.5 2.5 7.5 6.5C19.5 14 16.5 18.5 12 21z" stroke={logoColor} strokeWidth="2" fill={darkMode ? '#23232a' : '#fff'} />
+              <path d="M12 17c-2.5-1.5-4.5-4.5-4.5-7.5C7.5 7.5 9.5 6 12 6s4.5 1.5 4.5 3.5C16.5 12.5 14.5 15.5 12 17z" stroke={logoColor} strokeWidth="1.5" fill={darkMode ? '#18181b' : '#f1f5f9'} />
+            </svg>
+            <span style={{ fontWeight: 700, color: logoColor, fontFamily: "'Poppins', sans-serif", fontSize: 18, letterSpacing: '1px' }}>SerenitySpace</span>
+          </div>
+          <div className="footer-content" style={{ textAlign: 'center', flex: 1 }}>
+            © {new Date().getFullYear()} SerenitySpace.Inc. All rights reserved.
+          </div>
+          <div className="footer-social" style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram" className="footer-social-link">
+              <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" title="Twitter" className="footer-social-link">
+              <svg width="22" height="22" viewBox="0 0 512 512"><path d="M459.4 151.7c.32 4.54.32 9.1.32 13.66 0 138.72-105.58 298.56-298.56 298.56A296.32 296.32 0 0 1 0 408.09a209.1 209.1 0 0 0 24.42 1.28 209.09 209.09 0 0 0 129.29-44.56 104.52 104.52 0 0 1-97.52-72.54 132.07 132.07 0 0 0 19.8 1.6 110.2 110.2 0 0 0 27.45-3.6A104.48 104.48 0 0 1 21.8 188.1v-1.28a104.68 104.68 0 0 0 47.18 13.1A104.52 104.52 0 0 1 35.7 82.15a297.32 297.32 0 0 0 215.5 109.44 117.6 117.6 0 0 1-2.56-23.87A104.52 104.52 0 0 1 391.86 63.4a204.13 204.13 0 0 0 66.36-25.34 104.88 104.88 0 0 1-45.92 57.6A209.1 209.1 0 0 0 512 97.2a223.34 223.34 0 0 1-52.6 54.5Z"/></svg>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" title="Facebook" className="footer-social-link">
+              <svg width="22" height="22" viewBox="0 0 320 512"><path d="M279.14 288l14.22-92.66h-88.91V127.91c0-25.35 12.42-50.06 52.24-50.06H293V6.26S259.5 0 225.36 0c-73.22 0-121 44.38-121 124.72v70.62H22.89V288h81.47v224h100.2V288z"/></svg>
+            </a>
+          </div>
+        </footer>
+      </div>
+    </BrowserRouter>
   );
 }
 
