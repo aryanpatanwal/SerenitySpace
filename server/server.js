@@ -11,9 +11,21 @@ const profileRouter = require('./routes/profileRouter');
 const app = express();
 
 // Middleware
+const allowedOrigins = [
+  'https://serenityspacex.netlify.app',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+];
+
 app.use(cors({
-  origin: 'https://serenityspacex.netlify.app', // No trailing slash
-  credentials: true
+  origin(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
 }));
 app.use(express.json());
 

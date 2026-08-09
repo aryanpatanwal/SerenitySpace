@@ -1,5 +1,9 @@
 // API Configuration
-const API_BASE_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+// In dev, use relative URLs so Vite proxies /api to the local backend (avoids CORS).
+const API_BASE_URL = (import.meta.env.DEV
+  ? ''
+  : import.meta.env.VITE_API_URL || 'http://localhost:5000'
+).replace(/\/+$/, '');
 
 export const API_ENDPOINTS = {
   AUTH: `${API_BASE_URL}/api/auth`,

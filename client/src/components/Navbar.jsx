@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 export default function Navbar({ onLogout, darkMode, onToggleDarkMode, isAuthenticated }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const current = useLocation().pathname.slice(1);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -23,7 +24,12 @@ export default function Navbar({ onLogout, darkMode, onToggleDarkMode, isAuthent
     }}>
       <style>{`
         .nav-btn {
-          transition: background 0.2s, color 0.2s, transform 0.1s;
+          display: inline-block;
+          padding: 8px 14px;
+          border-radius: 8px;
+          background: transparent;
+          text-decoration: none;
+          transition: background-color 200ms ease, color 200ms ease, transform 100ms ease, border-radius 200ms ease;
         }
         .nav-btn:hover {
           background: #6366f1 !important;

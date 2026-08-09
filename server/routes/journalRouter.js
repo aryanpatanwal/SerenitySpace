@@ -7,7 +7,7 @@ const OpenAI = require('openai');
 // Initialize OpenAI
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  baseURL: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1'
+  baseURL: process.env.OPENAI_BASE_URL || 'https://integrate.api.nvidia.com/v1'
 });
 
 // Function to analyze journal content with AI
@@ -28,7 +28,7 @@ Please respond with ONLY valid JSON (no code block, no backticks, no explanation
 }`;
 
     const completion = await openai.chat.completions.create({
-      model: process.env.OPENAI_MODEL || "provider-6/gpt-4o",
+      model: process.env.OPENAI_MODEL || 'nvidia/nemotron-3-ultra-550b-a55b',
       messages: [{ role: "user", content: prompt }],
       temperature: 0.3,
     });

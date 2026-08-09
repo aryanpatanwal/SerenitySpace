@@ -33,6 +33,11 @@ export default function ChatbotPage({ darkMode }) {
         body: JSON.stringify({ message: userMsg.content }),
       });
       const data = await res.json();
+      if (res.status === 401) {
+        localStorage.removeItem('token');
+        window.location.href = '/login';
+        return;
+      }
       if (!res.ok) throw new Error(data.message || 'Error');
       setMessages(msgs => [...msgs, { role: 'assistant', content: data.reply }]);
     } catch (err) {
